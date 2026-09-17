@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Приглашение на свидание</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@500;600;700&family=Nunito:wght@400;600;700;800;900&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rose-50:#fff5f8;
+  --rose-100:#ffe3ee;
+  --rose-200:#ffc9dd;
+  --rose-400:#f486ae;
+  --rose-500:#ea5b8f;
+  --rose-600:#d43f78;
+  --rose-700:#b52c63;
+  --lav-100:#ede3fc;
+  --lav-300:#cdb6f4;
+  --lav-500:#a888e8;
+  --gold-400:#ffcf6b;
+  --plum-900:#3a2140;
+  --ink:#4a2e46;
+  --ink-soft:#93758e;
+  --card-bg:#fffcfd;
+  --page-bg:#fbe9f1;
+  --grey-btn:#f1e7ee;
+  --grey-btn-ink:#8a7186;
+}
+:root[data-theme="dark"]{
+  --card-bg:#241a29;
+  --page-bg:#1b1220;
+  --ink:#f7ecf3;
+  --ink-soft:#c8abc2;
+  --grey-btn:#372a3d;
+  --grey-btn-ink:#d3bccd;
+  --rose-50:#2a1c26;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --card-bg:#241a29;
+    --page-bg:#1b1220;
+    --ink:#f7ecf3;
+    --ink-soft:#c8abc2;
+    --grey-btn:#372a3d;
+    --grey-btn-ink:#d3bccd;
+    --rose-50:#2a1c26;
+  }
+}
+
+*{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;min-height:100%;}
+body{
+  font-family:'Nunito', system-ui, -apple-system, sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(circle at 10% 10%, var(--lav-100) 0%, transparent 38%),
+    radial-gradient(circle at 92% 18%, var(--rose-100) 0%, transparent 34%),
+    radial-gradient(circle at 15% 92%, var(--rose-100) 0%, transparent 30%),
+    var(--page-bg);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:34px 16px 46px;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* ambient floating decor behind everything */
+.ambient{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;}
+.ambient span{
+  position:absolute;
+  opacity:.5;
+  font-size:22px;
+  animation: drift 14s ease-in-out infinite;
+  filter: blur(.2px);
+}
+@keyframes drift{
+  0%,100%{ transform: translateY(0) rotate(0deg); }
+  50%{ transform: translateY(-26px) rotate(10deg); }
+}
+
+.stage{
+  width:100%;
+  max-width:400px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:26px;
+  position:relative;
+  z-index:1;
+}
+
+.brand{
+  font-family:'Comfortaa', sans-serif;
+  font-weight:700;
+  font-size:13px;
+  letter-spacing:.02em;
+  color:var(--rose-600);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  opacity:.85;
+}
+
+/* ---------- progress ---------- */
+.progress-wrap{
+  width:100%;
+  max-width:300px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:8px;
+}
+.progress{
+  position:relative;
+  width:100%;
+  height:22px;
+  display:flex;
+  align-items:center;
+}
+.progress-track{
+  width:100%;
+  height:7px;
+  background: var(--rose-100);
+  border-radius:99px;
+  position:relative;
+  overflow:visible;
+  box-shadow: inset 0 1px 2px rgba(180,60,110,.15);
+}
+.progress-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--lav-500), var(--rose-500), var(--rose-600));
+  border-radius:99px;
+  width:0%;
+  transition: width .6s cubic-bezier(.65,0,.35,1);
+}
+.progress-heart{
+  position:absolute;
+  top:50%; left:0%;
+  transform:translate(-50%,-50%);
+  font-size:22px;
+  transition: left .6s cubic-bezier(.65,0,.35,1);
+  animation: heartbeat 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 3px 5px rgba(200,60,110,.45));
+}
+@keyframes heartbeat{
+  0%,100%{ transform:translate(-50%,-50%) scale(1); }
+  50%{ transform:translate(-50%,-50%) scale(1.16); }
+}
+.progress-steps{
+  display:flex;
+  justify-content:space-between;
+  width:100%;
+  font-size:10px;
+  font-weight:700;
+  color:var(--ink-soft);
+  letter-spacing:.01em;
+}
+.progress-steps span.done{ color: var(--rose-600); }
+
+/* ---------- phone ---------- */
+.phone-shell{
+  position:relative;
+  width:300px;
+  height:620px;
+  filter: drop-shadow(0 30px 50px -18px rgba(170,45,100,.45));
+}
+.phone-border{
+  position:absolute; inset:0;
+  clip-path: url(#clipOuter);
+  background: linear-gradient(160deg, var(--lav-300), var(--rose-400) 55%, var(--rose-600));
+}
+.phone-border::after{
+  content:"";
+  position:absolute; inset:0;
+  background: radial-gradient(circle at 25% 10%, rgba(255,255,255,.55), transparent 40%);
+  mix-blend-mode: screen;
+}
+.phone-inner{
+  position:absolute; inset:0;
+  clip-path: url(#clipInner);
+  background: var(--card-bg);
+}
+.phone-notch{
+  position:absolute;
+  top:22px; left:50%;
+  transform:translateX(-50%);
+  width:92px; height:20px;
+  background: var(--plum-900);
+  border-radius:99px;
+  z-index:6;
+  opacity:.9;
+}
+.phone-notch::before{
+  content:"";
+  position:absolute;
+  right:14px; top:50%;
+  transform:translateY(-50%);
+  width:7px; height:7px;
+  border-radius:50%;
+  background:#2c3e6b;
+}
+
+.screen{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:58px 22px 26px;
+  text-align:center;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 6%, var(--lav-100) 0%, transparent 32%),
+    radial-gradient(circle at 92% 92%, var(--rose-100) 0%, transparent 36%),
+    var(--rose-50);
+}
+.confetti-layer{ position:absolute; inset:0; pointer-events:none; z-index:5; overflow:hidden; }
+.confetti-layer span{
+  position:absolute;
+  top:-20px;
+  font-size:15px;
+  animation: fall linear forwards;
+}
+@keyframes fall{
+  to{ transform: translateY(680px) rotate(340deg); opacity:0; }
+}
+
+.deco-cloud{ position:absolute; color:var(--lav-300); opacity:.6; pointer-events:none; z-index:1;}
+.deco-sparkle{ position:absolute; color:var(--gold-400); opacity:.8; pointer-events:none; z-index:1; animation: twinkle 2.4s ease-in-out infinite;}
+@keyframes twinkle{ 0%,100%{opacity:.25; transform:scale(.8);} 50%{opacity:.9; transform:scale(1.1);} }
+
+.illustration{ margin-bottom:8px; position:relative; z-index:2; }
+.illustration svg{ display:block; }
+
+h1.title{
+  font-family:'Comfortaa', sans-serif;
+  font-weight:700;
+  font-size:20px;
+  line-height:1.32;
+  margin: 4px 0 6px;
+  color:var(--ink);
+  position:relative;
+  z-index:2;
+}
+p.sub{
+  margin:0 0 16px;
+  font-size:13.5px;
+  color:var(--ink-soft);
+  line-height:1.55;
+  position:relative;
+  z-index:2;
+  max-width:230px;
+}
+.script-note{
+  font-family:'Caveat', cursive;
+  font-size:19px;
+  color:var(--rose-600);
+  font-weight:700;
+  margin: -4px 0 10px;
+  position:relative;
+  z-index:2;
+}
+
+.spacer{ flex:1; min-height:6px; }
+
+.btn{
+  appearance:none; border:none;
+  width:100%; max-width:226px;
+  padding:14px 18px;
+  border-radius:18px;
+  font-family:'Nunito', sans-serif;
+  font-weight:800;
+  font-size:14.5px;
+  cursor:pointer;
+  position:relative; z-index:2;
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+.btn:active{ transform:scale(.96); }
+.btn-pink{
+  color:#fff;
+  background: linear-gradient(135deg, var(--rose-500), var(--rose-700));
+  box-shadow: 0 14px 26px -10px rgba(180,40,100,.6), inset 0 1px 0 rgba(255,255,255,.35);
+}
+.btn-pink:hover{ filter:brightness(1.05); }
+.btn-grey{
+  background: var(--grey-btn);
+  color: var(--grey-btn-ink);
+  box-shadow: inset 0 0 0 1px rgba(180,120,160,.15);
+}
+.btn-row{
+  display:flex; flex-direction:column; gap:10px;
+  width:100%; align-items:center;
+  margin-top:auto;
+  position:relative; z-index:2;
+}
+
+/* ---------- scratch ---------- */
+.scratch-screen{ padding:0 !important; }
+.scratch-wrap{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px; z-index:1;}
+.scratch-label{
+  font-family:'Comfortaa', sans-serif; font-weight:700; font-size:21px; color:#fff;
+  text-shadow:0 3px 10px rgba(70,20,50,.35);
+}
+.scratch-hand{ font-size:26px; animation: swipe 1.6s ease-in-out infinite; }
+@keyframes swipe{
+  0%,100%{ transform:translateX(-16px) rotate(-6deg); }
+  50%{ transform:translateX(16px) rotate(6deg); }
+}
+canvas#scratchCanvas{ position:absolute; inset:0; z-index:2; touch-action:none; cursor:grab; }
+.hint{ position:absolute; bottom:24px; left:0; right:0; text-align:center; color:#fff; font-size:12px; font-weight:700; opacity:.9; z-index:3; }
+
+/* ---------- toast ---------- */
+.toast{
+  position:absolute; left:50%; bottom:104px;
+  transform:translate(-50%,14px);
+  background:var(--card-bg); color:var(--ink);
+  padding:10px 16px; border-radius:16px;
+  font-size:12.5px; font-weight:800;
+  box-shadow:0 14px 26px -10px rgba(150,50,100,.5);
+  display:flex; align-items:center; gap:8px;
+  opacity:0; pointer-events:none;
+  transition: opacity .25s ease, transform .25s ease;
+  z-index:9; white-space:nowrap;
+}
+.toast.show{ opacity:1; transform:translate(-50%,0); }
+.toast .kiss{ font-size:19px; animation:pop .5s ease; }
+@keyframes pop{ 0%{transform:scale(.3) rotate(-15deg);} 60%{transform:scale(1.25) rotate(8deg);} 100%{transform:scale(1) rotate(0);} }
+.shake{ animation: shakeAnim .4s ease; }
+@keyframes shakeAnim{ 0%,100%{transform:translateX(0);} 20%{transform:translateX(-6px);} 40%{transform:translateX(6px);} 60%{transform:translateX(-4px);} 80%{transform:translateX(4px);} }
+
+/* ---------- date/time card ---------- */
+.field-card{
+  width:100%;
+  background: var(--card-bg);
+  border-radius:20px;
+  padding:14px 16px 16px;
+  box-shadow: 0 8px 20px -12px rgba(180,60,110,.3), inset 0 0 0 1px var(--rose-100);
+  position:relative; z-index:2;
+  margin-bottom:14px;
+}
+.field{ text-align:left; margin-bottom:10px; }
+.field:last-child{ margin-bottom:0; }
+.field label{
+  display:flex; align-items:center; gap:6px;
+  font-size:11.5px; font-weight:800; color:var(--ink-soft);
+  margin-bottom:5px; margin-left:2px; text-transform:uppercase; letter-spacing:.03em;
+}
+.field input{
+  width:100%; padding:10px 12px; border-radius:13px;
+  border:1.5px solid var(--rose-100); background:var(--rose-50);
+  font-family:'Nunito', sans-serif; font-size:14px; font-weight:800; color:var(--ink);
+}
+.field input:focus{ outline:2px solid var(--rose-500); outline-offset:1px; background:var(--card-bg); }
+.preview-chip{
+  margin-top:4px;
+  display:inline-flex; align-items:center; gap:6px;
+  background: linear-gradient(135deg, var(--rose-100), var(--lav-100));
+  color:var(--rose-700); font-weight:800; font-size:12px;
+  padding:7px 13px; border-radius:99px;
+  position:relative; z-index:2;
+}
+
+/* ---------- choice ---------- */
+.tabs{ display:flex; gap:6px; flex-wrap:wrap; justify-content:center; margin-bottom:14px; position:relative; z-index:2;}
+.tab{
+  padding:7px 11px; border-radius:13px; background:var(--grey-btn); color:var(--grey-btn-ink);
+  font-size:11.5px; font-weight:800; cursor:pointer; display:flex; align-items:center; gap:4px;
+  transition: background .15s ease, color .15s ease;
+}
+.tab.active{ background: linear-gradient(135deg, var(--rose-500), var(--rose-700)); color:#fff; }
+.grid{ display:grid; grid-template-columns:1fr 1fr; gap:9px; width:100%; margin-bottom:14px; position:relative; z-index:2;}
+.tile{
+  background: var(--card-bg);
+  border:2px solid transparent;
+  border-radius:16px;
+  padding:12px 6px 10px;
+  display:flex; flex-direction:column; align-items:center; gap:7px;
+  cursor:pointer;
+  box-shadow: 0 8px 18px -10px rgba(180,60,110,.3);
+  transition: border-color .15s ease, transform .12s ease;
+  font-size:12px; font-weight:800; color:var(--ink);
+  position:relative;
+}
+.tile-badge{
+  width:38px; height:38px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:19px;
+  background: linear-gradient(135deg, var(--rose-100), var(--lav-100));
+}
+.tile:active{ transform:scale(.96); }
+.tile.selected{ border-color:var(--rose-500); }
+.tile.selected .tile-badge{ background: linear-gradient(135deg, var(--rose-500), var(--rose-700)); }
+.tile.selected::after{
+  content:"✓"; position:absolute; top:6px; right:8px;
+  width:16px; height:16px; border-radius:50%;
+  background:var(--rose-600); color:#fff; font-size:10px; font-weight:900;
+  display:flex; align-items:center; justify-content:center;
+}
+
+/* ---------- final ticket ---------- */
+.ticket{
+  width:100%;
+  background: var(--card-bg);
+  border-radius:20px;
+  box-shadow: 0 10px 24px -12px rgba(180,60,110,.35), inset 0 0 0 1px var(--rose-100);
+  position:relative; z-index:2;
+  padding:16px 16px 14px;
+  margin-bottom:12px;
+}
+.ticket-row{
+  display:flex; align-items:center; justify-content:space-between;
+  font-size:12.5px; font-weight:800; color:var(--ink);
+  padding:6px 0;
+}
+.ticket-row span.k{ color:var(--ink-soft); font-weight:700; }
+.ticket-divider{
+  border:none; border-top:2px dashed var(--rose-100); margin:8px 0;
+}
+.seal{
+  position:absolute; top:-16px; right:14px;
+  width:38px; height:38px; border-radius:50%;
+  background: linear-gradient(135deg, var(--rose-500), var(--rose-700));
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:16px;
+  box-shadow:0 8px 14px -6px rgba(180,40,100,.6);
+}
+.tg-field{ width:100%; text-align:left; margin-bottom:12px; position:relative; z-index:2;}
+
+@media (max-width:360px){
+  .stage{ transform: scale(.92); transform-origin: top center; margin-bottom:-40px; }
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<clipPath id="clipOuter" clipPathUnits="userSpaceOnUse">
+<path d="M 34.00,0.00 C 35.29,1.01 39.16,5.05 41.73,6.06 C 44.31,7.07 46.89,7.07 49.47,6.06 C 52.04,5.05 54.62,2.02 57.20,0.00 C 59.78,-2.02 62.36,-5.05 64.93,-6.06 C 67.51,-7.07 70.09,-7.07 72.67,-6.06 C 75.24,-5.05 77.82,-2.02 80.40,-0.00 C 82.98,2.02 85.56,5.05 88.13,6.06 C 90.71,7.07 93.29,7.07 95.87,6.06 C 98.44,5.05 101.02,2.02 103.60,0.00 C 106.18,-2.02 108.76,-5.05 111.33,-6.06 C 113.91,-7.07 116.49,-7.07 119.07,-6.06 C 121.64,-5.05 124.22,-2.02 126.80,-0.00 C 129.38,2.02 131.96,5.05 134.53,6.06 C 137.11,7.07 139.69,7.07 142.27,6.06 C 144.84,5.05 147.42,2.02 150.00,0.00 C 152.58,-2.02 155.16,-5.05 157.73,-6.06 C 160.31,-7.07 162.89,-7.07 165.47,-6.06 C 168.04,-5.05 170.62,-2.02 173.20,-0.00 C 175.78,2.02 178.36,5.05 180.93,6.06 C 183.51,7.07 186.09,7.07 188.67,6.06 C 191.24,5.05 193.82,2.02 196.40,0.00 C 198.98,-2.02 201.56,-5.05 204.13,-6.06 C 206.71,-7.07 209.29,-7.07 211.87,-6.06 C 214.44,-5.05 217.02,-2.02 219.60,-0.00 C 222.18,2.02 224.76,5.05 227.33,6.06 C 229.91,7.07 232.49,7.07 235.07,6.06 C 237.64,5.05 240.22,2.02 242.80,0.00 C 245.38,-2.02 247.96,-5.05 250.53,-6.06 C 253.11,-7.07 255.69,-7.07 258.27,-6.06 C 260.84,-5.05 264.71,-1.01 266.00,-0.00 C 267.29,1.01 264.53,-0.19 266.00,0.00 C 267.47,0.19 271.97,0.40 274.80,1.16 C 277.63,1.92 280.46,3.09 283.00,4.56 C 285.54,6.02 287.97,7.88 290.04,9.96 C 292.12,12.03 293.98,14.46 295.44,17.00 C 296.91,19.54 298.08,22.37 298.84,25.20 C 299.60,28.03 299.81,32.53 300.00,34.00 C 300.19,35.47 301.01,32.30 300.00,34.00 C 298.99,35.70 294.95,40.81 293.94,44.22 C 292.93,47.63 292.93,51.04 293.94,54.44 C 294.95,57.85 297.98,61.26 300.00,64.67 C 302.02,68.07 305.05,71.48 306.06,74.89 C 307.07,78.30 307.07,81.70 306.06,85.11 C 305.05,88.52 302.02,91.93 300.00,95.33 C 297.98,98.74 294.95,102.15 293.94,105.56 C 292.93,108.96 292.93,112.37 293.94,115.78 C 294.95,119.19 297.98,122.59 300.00,126.00 C 302.02,129.41 305.05,132.81 306.06,136.22 C 307.07,139.63 307.07,143.04 306.06,146.44 C 305.05,149.85 302.02,153.26 300.00,156.67 C 297.98,160.07 294.95,163.48 293.94,166.89 C 292.93,170.30 292.93,173.70 293.94,177.11 C 294.95,180.52 297.98,183.93 300.00,187.33 C 302.02,190.74 305.05,194.15 306.06,197.56 C 307.07,200.96 307.07,204.37 306.06,207.78 C 305.05,211.19 302.02,214.59 300.00,218.00 C 297.98,221.41 294.95,224.81 293.94,228.22 C 292.93,231.63 292.93,235.04 293.94,238.44 C 294.95,241.85 297.98,245.26 300.00,248.67 C 302.02,252.07 305.05,255.48 306.06,258.89 C 307.07,262.30 307.07,265.70 306.06,269.11 C 305.05,272.52 302.02,275.93 300.00,279.33 C 297.98,282.74 294.95,286.15 293.94,289.56 C 292.93,292.96 292.93,296.37 293.94,299.78 C 294.95,303.19 297.98,306.59 300.00,310.00 C 302.02,313.41 305.05,316.81 306.06,320.22 C 307.07,323.63 307.07,327.04 306.06,330.44 C 305.05,333.85 302.02,337.26 300.00,340.67 C 297.98,344.07 294.95,347.48 293.94,350.89 C 292.93,354.30 292.93,357.70 293.94,361.11 C 294.95,364.52 297.98,367.93 300.00,371.33 C 302.02,374.74 305.05,378.15 306.06,381.56 C 307.07,384.96 307.07,388.37 306.06,391.78 C 305.05,395.19 302.02,398.59 300.00,402.00 C 297.98,405.41 294.95,408.81 293.94,412.22 C 292.93,415.63 292.93,419.04 293.94,422.44 C 294.95,425.85 297.98,429.26 300.00,432.67 C 302.02,436.07 305.05,439.48 306.06,442.89 C 307.07,446.30 307.07,449.70 306.06,453.11 C 305.05,456.52 302.02,459.93 300.00,463.33 C 297.98,466.74 294.95,470.15 293.94,473.56 C 292.93,476.96 292.93,480.37 293.94,483.78 C 294.95,487.19 297.98,490.59 300.00,494.00 C 302.02,497.41 305.05,500.81 306.06,504.22 C 307.07,507.63 307.07,511.04 306.06,514.44 C 305.05,517.85 302.02,521.26 300.00,524.67 C 297.98,528.07 294.95,531.48 293.94,534.89 C 292.93,538.30 292.93,541.70 293.94,545.11 C 294.95,548.52 297.98,551.93 300.00,555.33 C 302.02,558.74 305.05,562.15 306.06,565.56 C 307.07,568.96 307.07,572.37 306.06,575.78 C 305.05,579.19 301.01,584.30 300.00,586.00 C 298.99,587.70 300.19,584.53 300.00,586.00 C 299.81,587.47 299.60,591.97 298.84,594.80 C 298.08,597.63 296.91,600.46 295.44,603.00 C 293.98,605.54 292.12,607.97 290.04,610.04 C 287.97,612.12 285.54,613.98 283.00,615.44 C 280.46,616.91 277.63,618.08 274.80,618.84 C 271.97,619.60 267.47,619.81 266.00,620.00 C 264.53,620.19 267.29,621.01 266.00,620.00 C 264.71,618.99 260.84,614.95 258.27,613.94 C 255.69,612.93 253.11,612.93 250.53,613.94 C 247.96,614.95 245.38,617.98 242.80,620.00 C 240.22,622.02 237.64,625.05 235.07,626.06 C 232.49,627.07 229.91,627.07 227.33,626.06 C 224.76,625.05 222.18,622.02 219.60,620.00 C 217.02,617.98 214.44,614.95 211.87,613.94 C 209.29,612.93 206.71,612.93 204.13,613.94 C 201.56,614.95 198.98,617.98 196.40,620.00 C 193.82,622.02 191.24,625.05 188.67,626.06 C 186.09,627.07 183.51,627.07 180.93,626.06 C 178.36,625.05 175.78,622.02 173.20,620.00 C 170.62,617.98 168.04,614.95 165.47,613.94 C 162.89,612.93 160.31,612.93 157.73,613.94 C 155.16,614.95 152.58,617.98 150.00,620.00 C 147.42,622.02 144.84,625.05 142.27,626.06 C 139.69,627.07 137.11,627.07 134.53,626.06 C 131.96,625.05 129.38,622.02 126.80,620.00 C 124.22,617.98 121.64,614.95 119.07,613.94 C 116.49,612.93 113.91,612.93 111.33,613.94 C 108.76,614.95 106.18,617.98 103.60,620.00 C 101.02,622.02 98.44,625.05 95.87,626.06 C 93.29,627.07 90.71,627.07 88.13,626.06 C 85.56,625.05 82.98,622.02 80.40,620.00 C 77.82,617.98 75.24,614.95 72.67,613.94 C 70.09,612.93 67.51,612.93 64.93,613.94 C 62.36,614.95 59.78,617.98 57.20,620.00 C 54.62,622.02 52.04,625.05 49.47,626.06 C 46.89,627.07 44.31,627.07 41.73,626.06 C 39.16,625.05 35.29,621.01 34.00,620.00 C 32.71,618.99 35.47,620.19 34.00,620.00 C 32.53,619.81 28.03,619.60 25.20,618.84 C 22.37,618.08 19.54,616.91 17.00,615.44 C 14.46,613.98 12.03,612.12 9.96,610.04 C 7.88,607.97 6.02,605.54 4.56,603.00 C 3.09,600.46 1.92,597.63 1.16,594.80 C 0.40,591.97 0.19,587.47 0.00,586.00 C -0.19,584.53 -1.01,587.70 0.00,586.00 C 1.01,584.30 5.05,579.19 6.06,575.78 C 7.07,572.37 7.07,568.96 6.06,565.56 C 5.05,562.15 2.02,558.74 0.00,555.33 C -2.02,551.93 -5.05,548.52 -6.06,545.11 C -7.07,541.70 -7.07,538.30 -6.06,534.89 C -5.05,531.48 -2.02,528.07 -0.00,524.67 C 2.02,521.26 5.05,517.85 6.06,514.44 C 7.07,511.04 7.07,507.63 6.06,504.22 C 5.05,500.81 2.02,497.41 0.00,494.00 C -2.02,490.59 -5.05,487.19 -6.06,483.78 C -7.07,480.37 -7.07,476.96 -6.06,473.56 C -5.05,470.15 -2.02,466.74 -0.00,463.33 C 2.02,459.93 5.05,456.52 6.06,453.11 C 7.07,449.70 7.07,446.30 6.06,442.89 C 5.05,439.48 2.02,436.07 0.00,432.67 C -2.02,429.26 -5.05,425.85 -6.06,422.44 C -7.07,419.04 -7.07,415.63 -6.06,412.22 C -5.05,408.81 -2.02,405.41 -0.00,402.00 C 2.02,398.59 5.05,395.19 6.06,391.78 C 7.07,388.37 7.07,384.96 6.06,381.56 C 5.05,378.15 2.02,374.74 0.00,371.33 C -2.02,367.93 -5.05,364.52 -6.06,361.11 C -7.07,357.70 -7.07,354.30 -6.06,350.89 C -5.05,347.48 -2.02,344.07 -0.00,340.67 C 2.02,337.26 5.05,333.85 6.06,330.44 C 7.07,327.04 7.07,323.63 6.06,320.22 C 5.05,316.81 2.02,313.41 0.00,310.00 C -2.02,306.59 -5.05,303.19 -6.06,299.78 C -7.07,296.37 -7.07,292.96 -6.06,289.56 C -5.05,286.15 -2.02,282.74 -0.00,279.33 C 2.02,275.93 5.05,272.52 6.06,269.11 C 7.07,265.70 7.07,262.30 6.06,258.89 C 5.05,255.48 2.02,252.07 -0.00,248.67 C -2.02,245.26 -5.05,241.85 -6.06,238.44 C -7.07,235.04 -7.07,231.63 -6.06,228.22 C -5.05,224.81 -2.02,221.41 -0.00,218.00 C 2.02,214.59 5.05,211.19 6.06,207.78 C 7.07,204.37 7.07,200.96 6.06,197.56 C 5.05,194.15 2.02,190.74 0.00,187.33 C -2.02,183.93 -5.05,180.52 -6.06,177.11 C -7.07,173.70 -7.07,170.30 -6.06,166.89 C -5.05,163.48 -2.02,160.07 -0.00,156.67 C 2.02,153.26 5.05,149.85 6.06,146.44 C 7.07,143.04 7.07,139.63 6.06,136.22 C 5.05,132.81 2.02,129.41 -0.00,126.00 C -2.02,122.59 -5.05,119.19 -6.06,115.78 C -7.07,112.37 -7.07,108.96 -6.06,105.56 C -5.05,102.15 -2.02,98.74 -0.00,95.33 C 2.02,91.93 5.05,88.52 6.06,85.11 C 7.07,81.70 7.07,78.30 6.06,74.89 C 5.05,71.48 2.02,68.07 0.00,64.67 C -2.02,61.26 -5.05,57.85 -6.06,54.44 C -7.07,51.04 -7.07,47.63 -6.06,44.22 C -5.05,40.81 -1.01,35.70 -0.00,34.00 C 1.01,32.30 -0.19,35.47 0.00,34.00 C 0.19,32.53 0.40,28.03 1.16,25.20 C 1.92,22.37 3.09,19.54 4.56,17.00 C 6.02,14.46 7.88,12.03 9.96,9.96 C 12.03,7.88 14.46,6.02 17.00,4.56 C 19.54,3.09 22.37,1.92 25.20,1.16 C 28.03,0.40 32.53,0.19 34.00,0.00 C 35.47,-0.19 32.71,-1.01 34.00,0.00 Z"/>
+</clipPath>
+<clipPath id="clipInner" clipPathUnits="userSpaceOnUse">
+<g transform="translate(9,9)"><path d="M 30.00,0.00 C 31.23,0.87 34.93,4.33 37.40,5.20 C 39.87,6.06 42.33,6.06 44.80,5.20 C 47.27,4.33 49.73,1.73 52.20,0.00 C 54.67,-1.73 57.13,-4.33 59.60,-5.20 C 62.07,-6.06 64.53,-6.06 67.00,-5.20 C 69.47,-4.33 71.93,-1.73 74.40,-0.00 C 76.87,1.73 79.33,4.33 81.80,5.20 C 84.27,6.06 86.73,6.06 89.20,5.20 C 91.67,4.33 94.13,1.73 96.60,0.00 C 99.07,-1.73 101.53,-4.33 104.00,-5.20 C 106.47,-6.06 108.93,-6.06 111.40,-5.20 C 113.87,-4.33 116.33,-1.73 118.80,-0.00 C 121.27,1.73 123.73,4.33 126.20,5.20 C 128.67,6.06 131.13,6.06 133.60,5.20 C 136.07,4.33 138.53,1.73 141.00,0.00 C 143.47,-1.73 145.93,-4.33 148.40,-5.20 C 150.87,-6.06 153.33,-6.06 155.80,-5.20 C 158.27,-4.33 160.73,-1.73 163.20,-0.00 C 165.67,1.73 168.13,4.33 170.60,5.20 C 173.07,6.06 175.53,6.06 178.00,5.20 C 180.47,4.33 182.93,1.73 185.40,0.00 C 187.87,-1.73 190.33,-4.33 192.80,-5.20 C 195.27,-6.06 197.73,-6.06 200.20,-5.20 C 202.67,-4.33 205.13,-1.73 207.60,-0.00 C 210.07,1.73 212.53,4.33 215.00,5.20 C 217.47,6.06 219.93,6.06 222.40,5.20 C 224.87,4.33 227.33,1.73 229.80,0.00 C 232.27,-1.73 234.73,-4.33 237.20,-5.20 C 239.67,-6.06 242.13,-6.06 244.60,-5.20 C 247.07,-4.33 250.77,-0.87 252.00,-0.00 C 253.23,0.87 250.71,-0.17 252.00,0.00 C 253.29,0.17 257.26,0.35 259.76,1.02 C 262.26,1.69 264.76,2.73 267.00,4.02 C 269.24,5.31 271.38,6.96 273.21,8.79 C 275.04,10.62 276.69,12.76 277.98,15.00 C 279.27,17.24 280.31,19.74 280.98,22.24 C 281.65,24.74 281.83,28.71 282.00,30.00 C 282.17,31.29 282.87,28.33 282.00,30.00 C 281.13,31.67 277.67,36.69 276.80,40.04 C 275.94,43.38 275.94,46.73 276.80,50.07 C 277.67,53.42 280.27,56.77 282.00,60.11 C 283.73,63.46 286.33,66.80 287.20,70.15 C 288.06,73.49 288.06,76.84 287.20,80.19 C 286.33,83.53 283.73,86.88 282.00,90.22 C 280.27,93.57 277.67,96.91 276.80,100.26 C 275.94,103.60 275.94,106.95 276.80,110.30 C 277.67,113.64 280.27,116.99 282.00,120.33 C 283.73,123.68 286.33,127.02 287.20,130.37 C 288.06,133.72 288.06,137.06 287.20,140.41 C 286.33,143.75 283.73,147.10 282.00,150.44 C 280.27,153.79 277.67,157.14 276.80,160.48 C 275.94,163.83 275.94,167.17 276.80,170.52 C 277.67,173.86 280.27,177.21 282.00,180.56 C 283.73,183.90 286.33,187.25 287.20,190.59 C 288.06,193.94 288.06,197.28 287.20,200.63 C 286.33,203.98 283.73,207.32 282.00,210.67 C 280.27,214.01 277.67,217.36 276.80,220.70 C 275.94,224.05 275.94,227.40 276.80,230.74 C 277.67,234.09 280.27,237.43 282.00,240.78 C 283.73,244.12 286.33,247.47 287.20,250.81 C 288.06,254.16 288.06,257.51 287.20,260.85 C 286.33,264.20 283.73,267.54 282.00,270.89 C 280.27,274.23 277.67,277.58 276.80,280.93 C 275.94,284.27 275.94,287.62 276.80,290.96 C 277.67,294.31 280.27,297.65 282.00,301.00 C 283.73,304.35 286.33,307.69 287.20,311.04 C 288.06,314.38 288.06,317.73 287.20,321.07 C 286.33,324.42 283.73,327.77 282.00,331.11 C 280.27,334.46 277.67,337.80 276.80,341.15 C 275.94,344.49 275.94,347.84 276.80,351.19 C 277.67,354.53 280.27,357.88 282.00,361.22 C 283.73,364.57 286.33,367.91 287.20,371.26 C 288.06,374.60 288.06,377.95 287.20,381.30 C 286.33,384.64 283.73,387.99 282.00,391.33 C 280.27,394.68 277.67,398.02 276.80,401.37 C 275.94,404.72 275.94,408.06 276.80,411.41 C 277.67,414.75 280.27,418.10 282.00,421.44 C 283.73,424.79 286.33,428.14 287.20,431.48 C 288.06,434.83 288.06,438.17 287.20,441.52 C 286.33,444.86 283.73,448.21 282.00,451.56 C 280.27,454.90 277.67,458.25 276.80,461.59 C 275.94,464.94 275.94,468.28 276.80,471.63 C 277.67,474.98 280.27,478.32 282.00,481.67 C 283.73,485.01 286.33,488.36 287.20,491.70 C 288.06,495.05 288.06,498.40 287.20,501.74 C 286.33,505.09 283.73,508.43 282.00,511.78 C 280.27,515.12 277.67,518.47 276.80,521.81 C 275.94,525.16 275.94,528.51 276.80,531.85 C 277.67,535.20 280.27,538.54 282.00,541.89 C 283.73,545.23 286.33,548.58 287.20,551.93 C 288.06,555.27 288.06,558.62 287.20,561.96 C 286.33,565.31 282.87,570.33 282.00,572.00 C 281.13,573.67 282.17,570.71 282.00,572.00 C 281.83,573.29 281.65,577.26 280.98,579.76 C 280.31,582.26 279.27,584.76 277.98,587.00 C 276.69,589.24 275.04,591.38 273.21,593.21 C 271.38,595.04 269.24,596.69 267.00,597.98 C 264.76,599.27 262.26,600.31 259.76,600.98 C 257.26,601.65 253.29,601.83 252.00,602.00 C 250.71,602.17 253.23,602.87 252.00,602.00 C 250.77,601.13 247.07,597.67 244.60,596.80 C 242.13,595.94 239.67,595.94 237.20,596.80 C 234.73,597.67 232.27,600.27 229.80,602.00 C 227.33,603.73 224.87,606.33 222.40,607.20 C 219.93,608.06 217.47,608.06 215.00,607.20 C 212.53,606.33 210.07,603.73 207.60,602.00 C 205.13,600.27 202.67,597.67 200.20,596.80 C 197.73,595.94 195.27,595.94 192.80,596.80 C 190.33,597.67 187.87,600.27 185.40,602.00 C 182.93,603.73 180.47,606.33 178.00,607.20 C 175.53,608.06 173.07,608.06 170.60,607.20 C 168.13,606.33 165.67,603.73 163.20,602.00 C 160.73,600.27 158.27,597.67 155.80,596.80 C 153.33,595.94 150.87,595.94 148.40,596.80 C 145.93,597.67 143.47,600.27 141.00,602.00 C 138.53,603.73 136.07,606.33 133.60,607.20 C 131.13,608.06 128.67,608.06 126.20,607.20 C 123.73,606.33 121.27,603.73 118.80,602.00 C 116.33,600.27 113.87,597.67 111.40,596.80 C 108.93,595.94 106.47,595.94 104.00,596.80 C 101.53,597.67 99.07,600.27 96.60,602.00 C 94.13,603.73 91.67,606.33 89.20,607.20 C 86.73,608.06 84.27,608.06 81.80,607.20 C 79.33,606.33 76.87,603.73 74.40,602.00 C 71.93,600.27 69.47,597.67 67.00,596.80 C 64.53,595.94 62.07,595.94 59.60,596.80 C 57.13,597.67 54.67,600.27 52.20,602.00 C 49.73,603.73 47.27,606.33 44.80,607.20 C 42.33,608.06 39.87,608.06 37.40,607.20 C 34.93,606.33 31.23,602.87 30.00,602.00 C 28.77,601.13 31.29,602.17 30.00,602.00 C 28.71,601.83 24.74,601.65 22.24,600.98 C 19.74,600.31 17.24,599.27 15.00,597.98 C 12.76,596.69 10.62,595.04 8.79,593.21 C 6.96,591.38 5.31,589.24 4.02,587.00 C 2.73,584.76 1.69,582.26 1.02,579.76 C 0.35,577.26 0.17,573.29 0.00,572.00 C -0.17,570.71 -0.87,573.67 0.00,572.00 C 0.87,570.33 4.33,565.31 5.20,561.96 C 6.06,558.62 6.06,555.27 5.20,551.93 C 4.33,548.58 1.73,545.23 0.00,541.89 C -1.73,538.54 -4.33,535.20 -5.20,531.85 C -6.06,528.51 -6.06,525.16 -5.20,521.81 C -4.33,518.47 -1.73,515.12 -0.00,511.78 C 1.73,508.43 4.33,505.09 5.20,501.74 C 6.06,498.40 6.06,495.05 5.20,491.70 C 4.33,488.36 1.73,485.01 0.00,481.67 C -1.73,478.32 -4.33,474.98 -5.20,471.63 C -6.06,468.28 -6.06,464.94 -5.20,461.59 C -4.33,458.25 -1.73,454.90 -0.00,451.56 C 1.73,448.21 4.33,444.86 5.20,441.52 C 6.06,438.17 6.06,434.83 5.20,431.48 C 4.33,428.14 1.73,424.79 0.00,421.44 C -1.73,418.10 -4.33,414.75 -5.20,411.41 C -6.06,408.06 -6.06,404.72 -5.20,401.37 C -4.33,398.02 -1.73,394.68 -0.00,391.33 C 1.73,387.99 4.33,384.64 5.20,381.30 C 6.06,377.95 6.06,374.60 5.20,371.26 C 4.33,367.91 1.73,364.57 0.00,361.22 C -1.73,357.88 -4.33,354.53 -5.20,351.19 C -6.06,347.84 -6.06,344.49 -5.20,341.15 C -4.33,337.80 -1.73,334.46 -0.00,331.11 C 1.73,327.77 4.33,324.42 5.20,321.07 C 6.06,317.73 6.06,314.38 5.20,311.04 C 4.33,307.69 1.73,304.35 0.00,301.00 C -1.73,297.65 -4.33,294.31 -5.20,290.96 C -6.06,287.62 -6.06,284.27 -5.20,280.93 C -4.33,277.58 -1.73,274.23 -0.00,270.89 C 1.73,267.54 4.33,264.20 5.20,260.85 C 6.06,257.51 6.06,254.16 5.20,250.81 C 4.33,247.47 1.73,244.12 -0.00,240.78 C -1.73,237.43 -4.33,234.09 -5.20,230.74 C -6.06,227.40 -6.06,224.05 -5.20,220.70 C -4.33,217.36 -1.73,214.01 -0.00,210.67 C 1.73,207.32 4.33,203.98 5.20,200.63 C 6.06,197.28 6.06,193.94 5.20,190.59 C 4.33,187.25 1.73,183.90 0.00,180.56 C -1.73,177.21 -4.33,173.86 -5.20,170.52 C -6.06,167.17 -6.06,163.83 -5.20,160.48 C -4.33,157.14 -1.73,153.79 -0.00,150.44 C 1.73,147.10 4.33,143.75 5.20,140.41 C 6.06,137.06 6.06,133.72 5.20,130.37 C 4.33,127.02 1.73,123.68 -0.00,120.33 C -1.73,116.99 -4.33,113.64 -5.20,110.30 C -6.06,106.95 -6.06,103.60 -5.20,100.26 C -4.33,96.91 -1.73,93.57 -0.00,90.22 C 1.73,86.88 4.33,83.53 5.20,80.19 C 6.06,76.84 6.06,73.49 5.20,70.15 C 4.33,66.80 1.73,63.46 0.00,60.11 C -1.73,56.77 -4.33,53.42 -5.20,50.07 C -6.06,46.73 -6.06,43.38 -5.20,40.04 C -4.33,36.69 -0.87,31.67 -0.00,30.00 C 0.87,28.33 -0.17,31.29 0.00,30.00 C 0.17,28.71 0.35,24.74 1.02,22.24 C 1.69,19.74 2.73,17.24 4.02,15.00 C 5.31,12.76 6.96,10.62 8.79,8.79 C 10.62,6.96 12.76,5.31 15.00,4.02 C 17.24,2.73 19.74,1.69 22.24,1.02 C 24.74,0.35 28.71,0.17 30.00,0.00 C 31.29,-0.17 28.77,-0.87 30.00,0.00 Z"/></g>
+</clipPath>
+</defs>
+</svg>
+
+<div class="ambient" id="ambient"></div>
+
+<div class="stage">
+  <div class="brand">✨ приглашение · для тебя</div>
+
+  <div class="progress-wrap">
+    <div class="progress">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-heart" id="progressHeart">💗</div>
+    </div>
+    <div class="progress-steps" id="progressSteps"></div>
+  </div>
+
+  <div class="phone-shell">
+    <div class="phone-border"></div>
+    <div class="phone-inner"></div>
+    <div class="phone-notch"></div>
+    <div class="screen" id="screen"></div>
+  </div>
+</div>
+
+<script>
+const OUTER_PATH_LEN = 1; // placeholder not used
+</script>
+<script>
+const screenEl = document.getElementById('screen');
+const fillEl = document.getElementById('progressFill');
+const heartEl = document.getElementById('progressHeart');
+const stepsEl = document.getElementById('progressSteps');
+const TOTAL_STEPS = 6;
+const stepLabels = ['стереть','вопрос','ответ','время','выбор','готово'];
+
+const state = { step:1, noTries:0, date:'2026-09-25', time:'20:00', category:'Кино', choice:null, tg:'' };
+
+const choiceIcons = { 'Колобок':'🍞','Человек-паук':'🕷️','Боевик':'💥','Ужасы':'👻','Мультик':'🎨','Фантастика':'🚀' };
+
+function setProgress(step){
+  const pct = ((step-1)/(TOTAL_STEPS-1))*100;
+  fillEl.style.width = pct + '%';
+  heartEl.style.left = pct + '%';
+  stepsEl.innerHTML = stepLabels.map((l,i)=> `<span class="${i < step ? 'done' : ''}">${l}</span>`).join('');
+}
+
+function clouds(){
+  return `<svg class="deco-cloud" style="top:14px;left:12px;width:22px;" viewBox="0 0 24 24" fill="currentColor"><path d="M7 18a4 4 0 0 1-.6-7.95A5 5 0 0 1 16 8.5 4.5 4.5 0 0 1 17.5 18H7z"/></svg>
+  <span class="deco-sparkle" style="bottom:100px;right:16px;font-size:14px;">✦</span>
+  <span class="deco-sparkle" style="top:110px;right:24px;font-size:10px;animation-delay:.6s;">✦</span>`;
+}
+
+function confettiBurst(container, emojis, count){
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  container.appendChild(layer);
+  for(let i=0;i<count;i++){
+    const s = document.createElement('span');
+    s.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+    s.style.left = Math.random()*94 + '%';
+    s.style.animationDuration = (1.4 + Math.random()*1.2) + 's';
+    s.style.animationDelay = (Math.random()*.6) + 's';
+    s.style.fontSize = (12 + Math.random()*10) + 'px';
+    layer.appendChild(s);
+  }
+  setTimeout(()=> layer.remove(), 3200);
+}
+
+function initAmbient(){
+  const box = document.getElementById('ambient');
+  const items = ['💗','✨','🌸','💕','✦'];
+  for(let i=0;i<10;i++){
+    const s = document.createElement('span');
+    s.textContent = items[Math.floor(Math.random()*items.length)];
+    s.style.left = Math.random()*100 + '%';
+    s.style.top = Math.random()*100 + '%';
+    s.style.animationDuration = (10 + Math.random()*8) + 's';
+    s.style.animationDelay = (Math.random()*6) + 's';
+    s.style.fontSize = (14 + Math.random()*14) + 'px';
+    box.appendChild(s);
+  }
+}
+initAmbient();
+
+function catIllustration(mood){
+  // original simple flat cat duo illustration
+  const blink = mood === 'shy' ? 'M18 6 Q22 2 26 6' : 'M16 5 Q20 1 24 5';
+  return `
+  <svg viewBox="0 0 170 128" width="168" height="126">
+    <ellipse cx="85" cy="118" rx="62" ry="7" fill="rgba(180,60,110,.12)"/>
+    <g class="cat-heart">
+      <path d="M85 24 C77 12 58 14 58 30 C58 46 85 64 85 64 C85 64 112 46 112 30 C112 14 93 12 85 24 Z" fill="#ff8fb3"/>
+    </g>
+    <g transform="translate(14,40)">
+      <path d="M8 26 L0 4 L22 16 Z" fill="#ffe3c9"/>
+      <path d="M46 26 L54 4 L32 16 Z" fill="#ffe3c9"/>
+      <circle cx="27" cy="44" r="30" fill="#fff1de"/>
+      <path d="M6 34 Q10 26 16 28" stroke="#e7a86b" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M48 34 Q44 26 38 28" stroke="#e7a86b" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <path d="M13 44 Q19 38 25 44" stroke="#4a2e46" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M29 44 Q35 38 41 44" stroke="#4a2e46" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M24 50 q3 3 6 0" stroke="#c96b46" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="12" cy="52" r="4.5" fill="#ffb6c8" opacity=".7"/>
+      <circle cx="42" cy="52" r="4.5" fill="#ffb6c8" opacity=".7"/>
+    </g>
+    <g transform="translate(88,40)">
+      <path d="M8 26 L0 4 L22 16 Z" fill="#f4a35e"/>
+      <path d="M46 26 L54 4 L32 16 Z" fill="#f4a35e"/>
+      <circle cx="27" cy="44" r="30" fill="#f8b874"/>
+      <path d="M8 30 Q27 18 46 30" stroke="#e08a3f" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".55"/>
+      <path d="M13 44 Q19 38 25 44" stroke="#4a2e46" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M29 44 Q35 38 41 44" stroke="#4a2e46" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <path d="M24 50 q3 3 6 0" stroke="#8a4a1f" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <circle cx="12" cy="52" r="4.5" fill="#ffdada" opacity=".8"/>
+      <circle cx="42" cy="52" r="4.5" fill="#ffdada" opacity=".8"/>
+    </g>
+  </svg>`;
+}
+
+function render(){
+  setProgress(state.step);
+  screenEl.classList.remove('scratch-screen','shake');
+  screenEl.innerHTML = '';
+  if(state.step === 1) renderScratch();
+  else if(state.step === 2) renderQuestion();
+  else if(state.step === 3) renderConfirm();
+  else if(state.step === 4) renderDateTime();
+  else if(state.step === 5) renderChoice();
+  else if(state.step === 6) renderFinal();
+}
+
+function renderScratch(){
+  screenEl.classList.add('scratch-screen');
+  screenEl.innerHTML = `
+    <div class="scratch-wrap">
+      <div class="scratch-label">Сотри меня ✨</div>
+      <div class="scratch-hand">👉</div>
+    </div>
+    <canvas id="scratchCanvas"></canvas>
+    <div class="hint">проведи пальцем по всему экрану</div>
+  `;
+  const canvas = document.getElementById('scratchCanvas');
+  const rect = document.querySelector('.phone-shell').getBoundingClientRect();
+  const w = rect.width, h = rect.height;
+  canvas.width = w; canvas.height = h;
+  canvas.style.width = w+'px'; canvas.style.height = h+'px';
+  const ctx = canvas.getContext('2d');
+
+  const grad = ctx.createLinearGradient(0,0,w,h);
+  grad.addColorStop(0,'#cdb6f4');
+  grad.addColorStop(.5,'#f486ae');
+  grad.addColorStop(1,'#ea5b8f');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = 'rgba(255,255,255,.35)';
+  for(let i=0;i<60;i++){
+    ctx.beginPath();
+    ctx.arc(Math.random()*w, Math.random()*h, Math.random()*1.6+0.4, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.globalCompositeOperation = 'destination-out';
+
+  let drawing = false, done = false, checkScheduled = false;
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    const cx = (e.touches ? e.touches[0].clientX : e.clientX) - r.left;
+    const cy = (e.touches ? e.touches[0].clientY : e.clientY) - r.top;
+    return [cx, cy];
+  }
+  function erase(x,y){ ctx.beginPath(); ctx.arc(x,y,36,0,Math.PI*2); ctx.fill(); }
+  function checkErased(){
+    if(checkScheduled || done) return;
+    checkScheduled = true;
+    requestAnimationFrame(()=>{
+      checkScheduled = false;
+      const data = ctx.getImageData(0,0,w,h).data;
+      let cleared=0, total=0;
+      for(let i=3;i<data.length;i+=4*24){ total++; if(data[i] < 40) cleared++; }
+      if(cleared/total > 0.45){
+        done = true;
+        confettiBurst(screenEl, ['✨','💗','💕'], 16);
+        setTimeout(()=> goTo(2), 380);
+      }
+    });
+  }
+  function start(e){ drawing=true; const [x,y]=pos(e); erase(x,y); e.preventDefault(); }
+  function move(e){ if(!drawing) return; const [x,y]=pos(e); erase(x,y); checkErased(); e.preventDefault(); }
+  function end(){ drawing=false; }
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, {passive:false});
+  canvas.addEventListener('touchmove', move, {passive:false});
+  canvas.addEventListener('touchend', end);
+  canvas.addEventListener('click', ()=>{ if(!done){ done=true; confettiBurst(screenEl,['✨','💗'],14); setTimeout(()=>goTo(2), 300);} });
+}
+
+function renderQuestion(){
+  screenEl.innerHTML = `
+    ${clouds()}
+    <div class="illustration">${catIllustration('happy')}</div>
+    <h1 class="title">Ты пойдёшь со мной<br>на свидание?</h1>
+    <div class="script-note">ответ я уже знаю... 💭</div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-pink" id="yesBtn">Да</button>
+      <button class="btn btn-grey" id="noBtn">Нет</button>
+    </div>
+    <div class="toast" id="qToast"><span class="kiss">😘</span><span>Отказы не принимаются</span></div>
+  `;
+  document.getElementById('yesBtn').onclick = ()=> goTo(3);
+  document.getElementById('noBtn').onclick = ()=>{
+    state.noTries++;
+    const toast = document.getElementById('qToast');
+    toast.querySelector('span.kiss').textContent = ['😘','💋','😽','🥺'][state.noTries % 4];
+    toast.classList.add('show');
+    screenEl.classList.remove('shake'); void screenEl.offsetWidth; screenEl.classList.add('shake');
+    setTimeout(()=> toast.classList.remove('show'), 1400);
+  };
+}
+
+function renderConfirm(){
+  screenEl.innerHTML = `
+    ${clouds()}
+    <div class="illustration">${catIllustration('shy')}</div>
+    <h1 class="title">Ты действительно<br>сказала да?</h1>
+    <p class="sub">урааа, я уже улыбаюсь 🎉</p>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-pink" id="confirmBtn">Да да, гА!</button>
+    </div>
+  `;
+  confettiBurst(screenEl, ['🎉','💗','✨','🌸'], 18);
+  document.getElementById('confirmBtn').onclick = ()=> goTo(4);
+}
+
+function formatPreview(dVal, tVal){
+  if(!dVal) return '';
+  const [y,m,d] = dVal.split('-').map(Number);
+  const dt = new Date(y, m-1, d);
+  const txt = dt.toLocaleDateString('ru-RU', {weekday:'short', day:'numeric', month:'long'});
+  return `${txt}${tVal ? ' · '+tVal : ''}`;
+}
+
+function renderDateTime(){
+  screenEl.innerHTML = `
+    ${clouds()}
+    <h1 class="title" style="margin-top:8px;">Будь готова<br>к этому времени</h1>
+    <p class="sub">я подстроюсь под тебя, если нужно 💛</p>
+    <div class="field-card">
+      <div class="field">
+        <label>📅 Дата</label>
+        <input type="date" id="dateInput" value="${state.date}">
+      </div>
+      <div class="field">
+        <label>⏰ Время</label>
+        <input type="time" id="timeInput" value="${state.time}">
+      </div>
+      <div class="preview-chip" id="previewChip">${formatPreview(state.date, state.time)}</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-pink" id="dtBtn">Что дальше ❤️</button>
+    </div>
+  `;
+  const dIn = document.getElementById('dateInput');
+  const tIn = document.getElementById('timeInput');
+  const chip = document.getElementById('previewChip');
+  function upd(){ chip.textContent = formatPreview(dIn.value, tIn.value); }
+  dIn.addEventListener('input', upd);
+  tIn.addEventListener('input', upd);
+  document.getElementById('dtBtn').onclick = ()=>{
+    if(dIn.value) state.date = dIn.value;
+    if(tIn.value) state.time = tIn.value;
+    goTo(5);
+  };
+}
+
+function renderChoice(){
+  const categories = [['Кино','🎬'],['Блюда','🍜'],['Напитки','🥤'],['Места','📍'],['Активности','🎲']];
+  const items = Object.keys(choiceIcons);
+  screenEl.innerHTML = `
+    ${clouds()}
+    <h1 class="title">Что посмотрим?</h1>
+    <p class="sub">выбери фильм на вечер</p>
+    <div class="tabs" id="tabs">
+      ${categories.map(([c,ic])=>`<div class="tab ${c==='Кино'?'active':''}" data-cat="${c}">${ic} ${c}</div>`).join('')}
+    </div>
+    <div class="grid" id="grid">
+      ${items.map(it=>`<div class="tile ${state.choice===it?'selected':''}" data-item="${it}"><div class="tile-badge">${choiceIcons[it]}</div>${it}</div>`).join('')}
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row" id="choiceBtnRow" style="${state.choice ? '' : 'visibility:hidden;'}">
+      <button class="btn btn-pink" id="choiceNext">Готово</button>
+    </div>
+  `;
+  document.getElementById('tabs').addEventListener('click', (e)=>{
+    const tab = e.target.closest('.tab');
+    if(!tab) return;
+    if(tab.dataset.cat !== 'Кино'){
+      const toast = document.createElement('div');
+      toast.className='toast show';
+      toast.style.bottom='150px';
+      toast.innerHTML = '<span>✨</span><span>Этот раздел скоро появится</span>';
+      screenEl.appendChild(toast);
+      setTimeout(()=>toast.remove(), 1300);
+      return;
+    }
+    document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+  document.getElementById('grid').addEventListener('click', (e)=>{
+    const tile = e.target.closest('.tile');
+    if(!tile) return;
+    document.querySelectorAll('.tile').forEach(t=>t.classList.remove('selected'));
+    tile.classList.add('selected');
+    state.choice = tile.dataset.item;
+    document.getElementById('choiceBtnRow').style.visibility = 'visible';
+  });
+  document.getElementById('choiceNext').onclick = ()=> goTo(6);
+}
+
+function renderFinal(){
+  const icon = state.choice ? choiceIcons[state.choice] : '🎬';
+  const previewDate = formatPreview(state.date, state.time);
+  screenEl.innerHTML = `
+    ${clouds()}
+    <div class="illustration">${catIllustration('happy')}</div>
+    <h1 class="title">Рада, что не отказалась</h1>
+    <p class="sub" style="margin-bottom:12px;">маленькое напоминание о вечере</p>
+    <div class="ticket">
+      <div class="seal">💌</div>
+      <div class="ticket-row"><span class="k">Когда</span><span>${previewDate}</span></div>
+      <hr class="ticket-divider">
+      <div class="ticket-row"><span class="k">Что смотрим</span><span>${icon} ${state.choice || '—'}</span></div>
+    </div>
+    <div class="tg-field">
+      <div class="field">
+        <label>💬 Telegram (по желанию)</label>
+        <input type="text" id="tgInput" placeholder="@username" value="${state.tg}">
+      </div>
+    </div>
+    <div class="spacer"></div>
+    <div class="btn-row">
+      <button class="btn btn-pink" id="saveBtn">Сохранить</button>
+      <button class="btn btn-grey" id="restartBtn">Пройти ещё раз</button>
+    </div>
+    <div class="toast" id="saveToast"><span>💗</span><span>Сохранено!</span></div>
+  `;
+  confettiBurst(screenEl, ['💗','🌸','✨','💖'], 14);
+  document.getElementById('tgInput').addEventListener('input', e=> state.tg = e.target.value);
+  document.getElementById('saveBtn').onclick = ()=>{
+    const t = document.getElementById('saveToast');
+    t.classList.add('show');
+    confettiBurst(screenEl, ['💗','✨'], 10);
+    setTimeout(()=> t.classList.remove('show'), 1500);
+  };
+  document.getElementById('restartBtn').onclick = ()=>{
+    state.step=1; state.noTries=0; state.choice=null; state.tg='';
+    render();
+  };
+}
+
+function goTo(step){ state.step = step; render(); }
+render();
+</script>
+</body>
+</html>
